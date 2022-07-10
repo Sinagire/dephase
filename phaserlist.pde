@@ -7,17 +7,15 @@ public class PhaserList extends ArrayList<Phaser>{
     r2 = r2d;
     len = 0;
     lenShow = -1;
-    oscillo = createGraphics(800*10,int((r1d+r2d)*2));
-    oscillo.beginDraw();
-    oscillo.pushMatrix(); // To remember the initial state
-    oscillo.pushMatrix();
-    oscillo.endDraw();
     omega = omegad;
     theta = 0;
     sigma = sigmad;
     inf = false;
     axis_x = false;
     axis_y = false;
+    oscillo_flag = true;
+    // building oscillo
+    osc=new oscillo(0, y-r1-r2, int((r1d+r2d)*2));
   }
   
   public void average() {
@@ -137,18 +135,18 @@ public class PhaserList extends ArrayList<Phaser>{
   }
   
   
-  public void oscillo_show(float shift){
-    float yt = ave_y;
-    //if (flagRotate) yt = ave_x * sin(theta) + ave_y * cos(theta); 
-    osc_shift+=shift;
-    oscillo.beginDraw();
-    oscillo.popMatrix();
-    oscillo.translate(shift,0);
-    oscillo.fill(0,0);
-    oscillo.circle(x-r1-r2, yt*r1+r1+r2, r2);
-    oscillo.pushMatrix();
-    oscillo.endDraw();
-    image(oscillo,-osc_shift,y-r1-r2);
+  public void oscillo_show(float shift)
+  {
+    osc.record(shift, ave_y, x-r1-r2,
+    r1, r1+r2, r2);
+    if (oscillo_flag){
+      osc.show();
+    }
+  }
+
+  public void oscillo_show()
+  {
+    oscillo_show(0.5);
   }
   
   public void reset(){
@@ -157,23 +155,8 @@ public class PhaserList extends ArrayList<Phaser>{
       Phaser p = iter.next();
       p.set(0);
     }
-    oscillo_reset();
+    osc.reset();
     theta = 0;
-  }
-  
-  public void oscillo_reset(){
-    osc_shift=0;
-    oscillo.beginDraw();
-    oscillo.popMatrix();
-    oscillo.popMatrix();
-    oscillo.background(0,0);
-    oscillo.pushMatrix();
-    oscillo.pushMatrix();
-    oscillo.endDraw();
-  }
-  
-  public void oscillo_show(){
-    oscillo_show(0.5);
   }
   
   public boolean add(Phaser p){
@@ -184,16 +167,27 @@ public class PhaserList extends ArrayList<Phaser>{
   public int get_lenShow(){
     if (lenShow > 0) return lenShow;
     return len;
-  };
+  }
+
+  public boolean set_oscillo(boolean b){
+    oscillo_flag = b;
+    return oscillo_flag;
+  }
+
+  public boolean oscillo_toggle(){
+    oscillo_flag = (! oscillo_flag);
+    return oscillo_flag;
+  }
     
     private float x, y;
     private float r1, r2;
     private float ave_x, ave_y;
-    private PGraphics oscillo;
-    private float osc_shift;
     private int len, lenShow;
     private float omega, theta, sigma;
     private boolean inf;
     private boolean flagRotate;
     private boolean axis_x, axis_y;
+    private boolean oscillo_flag;
+    private oscillo osc;
+    
 }

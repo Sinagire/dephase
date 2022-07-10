@@ -26,7 +26,7 @@ void setup(){
   int M=4*rs;
   float r1_pl=75*s;
   float r2_pl=10*s;
-  float r1=40*s/rs;
+  float r1=40*s/rs; // The ring radius
   float r2=12*s/rs;
   float margin=14*s/rs;
   float m  = r1 + margin;
@@ -76,7 +76,7 @@ void draw(){
   pl.average();
   pl.showAverage();
   if (speed == 0){
-    pl.oscillo_show(0);
+    pl.oscillo_show(0); // to send dt=0
   }
   else{
     pl.oscillo_show();
@@ -138,6 +138,10 @@ void mouseReleased(){
       break;
     case 8:
       exit();
+      break;
+    default:
+      // toggle the oscillo
+      pl.oscillo_toggle();
       break;
   }
 }
